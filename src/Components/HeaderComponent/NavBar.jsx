@@ -10,5 +10,5 @@ class NavBar extends Component {
       </header>
     );
   }
-};
+}
 export default NavBar;
