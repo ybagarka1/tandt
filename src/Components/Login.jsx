@@ -1,62 +1,76 @@
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import React, { Component } from "react";
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import "./Login.css";
+import AppBar from 'material-ui/AppBar';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import axios from 'axios';
 
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      email: "",
-      password: ""
-    };
+class Login extends Component {
+constructor(props){
+  super(props);
+  this.state={
+  username:'',
+  password:''
   }
-
-  validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0;
+ }
+ handleClick(event){
+  var apiBaseUrl = "http://52.151.79.89:80/api/";
+  var self = this;
+  var payload={
+  "email":this.state.username,
+  "password":this.state.password
   }
-
-  handleChange = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    });
+  axios.post(apiBaseUrl+'v1/users', payload)
+  .then(function (response) {
+  console.log(response);
+  if(response.data.code == 200){
+  console.log("Login successfull");
+  var uploadScreen=[];
+  uploadScreen.push(<UploadScreen appContext={self.props.appContext}/>)
+  self.props.appContext.setState({loginPage:[],uploadScreen:uploadScreen})
   }
-
-  handleSubmit = event => {
-    event.preventDefault();
+  else if(response.data.code == 204){
+  console.log("Username password do not match");
+  alert("username password do not match")
   }
-
-  render() {
+  else{
+  console.log("Username does not exists");
+  alert("Username does not exist");
+  }
+  })
+  .catch(function (error) {
+  console.log(error);
+  });
+  }
+render() {
     return (
-      <div className="Login">
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email" bsSize="large">
-            <ControlLabel>Email</ControlLabel>
-            <FormControl
-              autoFocus
-              type="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            ></FormControl>
-          </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
-            <ControlLabel>Password</ControlLabel>
-            <FormControl
-              value={this.state.password}
-              onChange={this.handleChange}
-              type="password"
-            />
-          </FormGroup>
-          <Button
-            block
-            bsSize="large"
-            disabled={!this.validateForm()}
-            type="submit"
-          >
-            Login
-          </Button>
-        </form>
+      <div>
+        <MuiThemeProvider>
+          <div>
+          <AppBar
+             title="Login"
+           />
+           <TextField
+             hintText="Enter your Username"
+             floatingLabelText="Username"
+             onChange = {(event,newValue) => this.setState({username:newValue})}
+             />
+           <br/>
+             <TextField
+               type="password"
+               hintText="Enter your Password"
+               floatingLabelText="Password"
+               onChange = {(event,newValue) => this.setState({password:newValue})}
+               />
+             <br/>
+             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+         </div>
+         </MuiThemeProvider>
       </div>
     );
   }
 }
+const style = {
+ margin: 0,
+};
+export default Login;
