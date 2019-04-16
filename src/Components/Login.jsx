@@ -14,14 +14,14 @@ constructor(props){
   }
  }
  handleClick(event){
-  var apiBaseUrl = "http://52.151.79.89:80/api/";
+  var apiBaseUrl = "http://52.151.79.89:80/api/v1/users/";
   var self = this;
   var payload={
   "email":this.state.username,
   "password":this.state.password,
   "Access-Control-Allow-Credentials": true,
   }
-  axios.post(apiBaseUrl+'v1/users', payload)
+  axios.post(apiBaseUrl, payload)
   .then(function (response) {
   console.log(response);
   if(response.data.code == 200){
