@@ -18,7 +18,8 @@ constructor(props){
   var self = this;
   var payload={
   "email":this.state.username,
-  "password":this.state.password
+  "password":this.state.password,
+  "Access-Control-Allow-Credentials": true,
   }
   axios.post(apiBaseUrl+'v1/users', payload)
   .then(function (response) {
